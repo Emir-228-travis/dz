@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter, Cursor Tracker, Traffic Light</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+
+        .counter-container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .counter-value {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: black;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        /* Стили для отслеживания координат */
+        .tracking-box {
+            width: 500px;
+            height: 500px;
+            border: 2px solid black;
+            position: relative;
+            background-color: white;
+        }
+        .coordinates {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+
+        .traffic-light-container {
+            text-align: center;
+        }
+        .traffic-light {
+            width: 100px;
+            height: 280px;
+            background-color: black;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0 auto;
+        }
+        .light {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: gray;
+            margin: 0 auto;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Счетчик -->
+<div class="counter-container">
+    <div id="counter" class="counter-value">0</div>
+    <button id="decrement">-</button>
+    <button id="increment">+</button>
+</div>
+
+
+<div class="tracking-box" id="trackingBox">
+    <div class="coordinates" id="coordinates">X: 0, Y: 0</div>
+</div>
+
+
+<div class="traffic-light-container">
+    <div class="traffic-light">
+        <div id="redLight" class="light"></div>
+        <div id="yellowLight" class="light"></div>
+        <div id="greenLight" class="light"></div>
+    </div>
+    <div id="trafficMessage" class="message">Enter color...</div>
+</div>
+
+<script>
+
+    let counterValue = 0;
+    const counter = document.getElementById('counter');
+    const incrementButton = document.getElementById('increment');
+    const decrementButton = document.getElementById('decrement');
+
+    incrementButton.addEventListener('click', () => {
+        counterValue++;
+        updateCounter('increment');
+    });
+
+    decrementButton.addEventListener('click', () => {
+        if (counterValue > 0) {
+            counterValue--;
+            updateCounter('decrement');
+        }
+    });
+
+    function updateCounter(action) {
+        counter.textContent = counterValue;
+        if (action === 'increment') {
+            counter.style.color = 'green';
+        } else if (action === 'decrement') {
+            counter.style.color = 'red';
+        }
+    }
+
+    // Функционал для отслеживания координат курсора
+    const trackingBox = document.getElementById('trackingBox');
+    const coordinatesDisplay = document.getElementById('coordinates');
+
+    trackingBox.addEventListener('mousemove', (event) => {
+        const rect = trackingBox.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        coordinatesDisplay.textContent = `X: ${x}, Y: ${y}`;
+    });
+
+    // Функционал для светофора
+    const redLight = document.getElementById('redLight');
+    const yellowLight = document.getElementById('yellowLight');
+    const greenLight = document.getElementById('greenLight');
+    const trafficMessage = document.getElementById('trafficMessage');
+
+    function updateTrafficLight(color) {
+        redLight.style.backgroundColor = 'gray';
+        yellowLight.style.backgroundColor = 'gray';
+        greenLight.style.backgroundColor = 'gray';
+
+        if (color.toLowerCase() === 'красный') {
+            redLight.style.backgroundColor = 'red';
+            trafficMessage.textContent = 'STOP';
+        } else if (color.toLowerCase() === 'желтый') {
+            yellowLight.style.backgroundColor = 'yellow';
+            trafficMessage.textContent = 'READY';
+        } else if (color.toLowerCase() === 'зеленый') {
+            greenLight.style.backgroundColor = 'green';
+            trafficMessage.textContent = 'GO';
+        } else {
+            trafficMessage.textContent = 'Invalid color';
+        }
+    }
+
+    const userColor = prompt('Введите цвет светофора (Красный, Желтый, Зеленый):');
+    updateTrafficLight(userColor);
+</script>
+
+</body>
+</html>
