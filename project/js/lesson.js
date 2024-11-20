@@ -62,6 +62,36 @@ const switchTab = () => {
 
 setInterval(switchTab, 3000)
 
+const modal = document.querySelector('.modal')
+const triggerButton = document.querySelector('#btn-get')
+const closeButton = document.querySelector('.modal_close')
+const openModal = () => {
+    modal.style.display = 'block'
+    document.body.style.overflow = 'hidden'
+}
+const closeModal = () => {
+    modal.style.display = 'none'
+    document.body.style.overflow = ''
+}
+triggerButton.onclick = () => openModal();
+closeButton.onclick = () => closeModal();
+modal.onclick = (event) => {
+    if (event.target === modal) {
+        closeModal()
+    }
+};
+const showModalOnScroll = () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        openModal();
+        window.removeEventListener('scroll', showModalOnScroll);
+    }
+};
+window.addEventListener('scroll', showModalOnScroll);
+const showModalAfterDelay = () => {
+    setTimeout(openModal, 10000);
+};
+window.addEventListener('load', showModalAfterDelay);
+
 //converter
 
 const usdInput = document.querySelector('#usd');
@@ -98,3 +128,24 @@ const converter = (element, targetElement) => {
 converter(somInput, [usdInput, eurInput])
 converter(usdInput, [somInput, eurInput])
 converter(eurInput, [somInput, usdInput])
+
+
+//CARD SWITCHER
+
+const nextButton = document.querySelector('#btn-next');
+const prevButton = document.querySelector('#btn-prev');
+const cardBlock = document.querySelector('.card');
+let cardIndex = 0
+
+nextButton.onclick = () => {
+    cardIndex++
+    fetch(`https://jsonplaceholder.typicode.com/todos/${cardIndex}`)
+        .then((response) => response.json())
+        .then((data) => {
+          cardBlock.innerHTML = `
+          <p>${data.title}</p>
+          <p>${data.completed}</p>
+          <span>${data.id}</span> 
+          `
+        })
+}
